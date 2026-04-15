@@ -3,80 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Ultimate Quiz</title>
+    <title>Hello Kitty Quiz</title>
     <style>
         body {
-            background-color: #ffeef8;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #fff0f5;
+            background-image: radial-gradient(#ffb3d9 1px, transparent 1px);
+            background-size: 20px 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            overflow: hidden;
         }
 
         #game-container {
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
             padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(255, 105, 180, 0.3);
             text-align: center;
-            max-width: 500px;
-            width: 90%;
-            border: 4px solid #ffb3d9;
+            max-width: 400px;
+            width: 85%;
+            border: 5px solid #ffb3d9;
         }
 
         #character-sprite {
-            width: 150px;
-            height: 150px;
-            margin-bottom: 20px;
-            transition: transform 0.3s ease;
+            width: 180px;
+            height: 180px;
+            object-fit: contain;
+            margin-bottom: 10px;
         }
 
-        .bounce { animation: bounce 0.5s infinite alternate; }
-        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
-
-        .options-container {
-            display: grid;
-            gap: 10px;
-            margin-top: 20px;
+        .bounce { animation: cuteBounce 0.8s infinite alternate ease-in-out; }
+        @keyframes cuteBounce { 
+            from { transform: translateY(0); } 
+            to { transform: translateY(-15px); } 
         }
+
+        .glitch { animation: shake 0.2s infinite; filter: grayscale(1) contrast(2) brightness(0.5); }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px); }
+            50% { transform: translate(-1px, -2px); }
+            100% { transform: translate(1px, 1px); }
+        }
+
+        h2 { color: #ff4da6; font-size: 22px; }
+
+        .options-container { display: grid; gap: 12px; }
 
         button {
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            background-color: #ffb3d9;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        button:hover { background-color: #ff85c2; }
-
-        .hidden { display: none; }
-        
-        #message {
-            margin-top: 15px;
-            font-weight: bold;
+            padding: 15px;
+            border: 2px solid #ffb3d9;
+            border-radius: 50px;
+            background-color: white;
             color: #ff4da6;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .failed { color: red !important; font-size: 24px; }
+        button:hover { background-color: #ffb3d9; color: white; }
+
+        /* Winner's Reward Style */
+        #reward-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0fff0;
+            border: 2px dashed #4caf50;
+            border-radius: 10px;
+        }
+
+        #reward-text {
+            word-break: break-all;
+            font-family: monospace;
+            background: #eee;
+            padding: 5px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .copy-btn { background-color: #4caf50; border-color: #4caf50; margin-top: 5px; }
+
+        #message { margin-top: 20px; font-size: 18px; color: #ff1493; }
+        .failed-text { color: #ff0000 !important; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <img id="character-sprite" src="https://placehold.co/150x150/ffb3d9/white?text=Hello+Kitty" alt="Hello Kitty">
+    <img id="character-sprite" class="bounce" src="https://media.tenor.com/7SjLz-Y2_6wAAAAi/hello-kitty-sanrio.gif" alt="Hello Kitty">
     
     <div id="quiz-box">
         <h2 id="question-text">Loading...</h2>
         <div id="options" class="options-container"></div>
         <p id="message"></p>
+        
+        <div id="reward-area" style="display: none;">
+            <div id="reward-box">
+                <p><strong>Your Reward Code:</strong></p>
+                <code id="reward-text">1fISLOHkNNHMrsXQv4NzyCBPXHq5vMeoN</code>
+                <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -91,15 +122,13 @@
         { q: "What place do you love the most?", options: ["Flower fields", "Mountains", "Water", "Water and flower fields"], correct: 3 }
     ];
 
-    const compliments = ["You're so smart!", "Amazing!", "I love you!", "Perfect!", "You're doing great!", "You're my favorite!"];
-    
     let currentQuestion = 0;
     const sprite = document.getElementById('character-sprite');
     const questionEl = document.getElementById('question-text');
     const optionsEl = document.getElementById('options');
     const messageEl = document.getElementById('message');
+    const rewardArea = document.getElementById('reward-area');
 
-    // Check if the user has already failed previously
     if (localStorage.getItem('gameStatus') === 'failed') {
         renderFailure();
     } else {
@@ -111,13 +140,10 @@
             renderWin();
             return;
         }
-
         const data = questions[currentQuestion];
         questionEl.innerText = data.q;
         optionsEl.innerHTML = '';
         messageEl.innerText = '';
-        sprite.classList.add('bounce');
-
         data.options.forEach((opt, index) => {
             const btn = document.createElement('button');
             btn.innerText = opt;
@@ -129,8 +155,8 @@
     function checkAnswer(index) {
         if (index === questions[currentQuestion].correct) {
             currentQuestion++;
-            messageEl.innerText = compliments[Math.floor(Math.random() * compliments.length)];
-            setTimeout(loadQuestion, 1500);
+            messageEl.innerText = "Yay! Correct! 💖";
+            setTimeout(loadQuestion, 1000);
         } else {
             failGame();
         }
@@ -142,23 +168,31 @@
     }
 
     function renderFailure() {
-        questionEl.innerText = "GAME OVER";
+        questionEl.innerText = "ACCESS DENIED";
         optionsEl.innerHTML = '';
         messageEl.innerText = "You failed. You can never play again.";
-        messageEl.classList.add('failed');
+        messageEl.classList.add('failed-text');
         sprite.classList.remove('bounce');
-        // Replace this with your image of Hello Kitty bleeding
-        sprite.src = "https://placehold.co/150x150/000/red?text=BLOOD";
-        sprite.style.transform = "scale(1.2)";
+        sprite.classList.add('glitch');
+        sprite.src = "https://media.tenor.com/2X9v_s5XnS0AAAAi/hello-kitty-bad-tz-maru.gif";
+        document.body.style.backgroundColor = "#220000";
     }
 
     function renderWin() {
-        questionEl.innerText = "YOU WON!";
+        questionEl.innerText = "YOU WON! ❤️";
         optionsEl.innerHTML = '';
-        messageEl.innerText = "You know me so well! ❤️";
-        sprite.src = "https://placehold.co/150x150/ffb3d9/white?text=Happy+Kitty";
+        messageEl.innerText = "You know me perfectly! Here is your reward:";
+        sprite.src = "https://media.tenor.com/unS77_6O6_0AAAAi/hello-kitty-sanrio.gif";
+        rewardArea.style.display = "block";
+    }
+
+    function copyCode() {
+        const code = document.getElementById('reward-text').innerText;
+        navigator.clipboard.writeText(code);
+        alert("Code copied to clipboard!");
     }
 </script>
 
 </body>
 </html>
+
