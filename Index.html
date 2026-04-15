@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ultimate Quiz</title>
+    <style>
+        body {
+            background-color: #ffeef8;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            border: 4px solid #ffb3d9;
+        }
+
+        #character-sprite {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .bounce { animation: bounce 0.5s infinite alternate; }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+
+        .options-container {
+            display: grid;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background-color: #ffb3d9;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover { background-color: #ff85c2; }
+
+        .hidden { display: none; }
+        
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #ff4da6;
+        }
+
+        .failed { color: red !important; font-size: 24px; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <img id="character-sprite" src="https://placehold.co/150x150/ffb3d9/white?text=Hello+Kitty" alt="Hello Kitty">
+    
+    <div id="quiz-box">
+        <h2 id="question-text">Loading...</h2>
+        <div id="options" class="options-container"></div>
+        <p id="message"></p>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        { q: "When is my birthday?", options: ["11/22/2007", "11/22/2008"], correct: 0 },
+        { q: "What is my favorite color?", options: ["Red", "Black"], correct: 0 },
+        { q: "Do you love me?", options: ["Yes", "No"], correct: 0 },
+        { q: "What's the name that I like to be called?", options: ["Coby", "Baba"], correct: 0 },
+        { q: "What is your favorite band?", options: ["BTS", "One Direction", "Queen", "The Beatles"], correct: 1 },
+        { q: "What is your favorite song lyrics?", options: ["Perfect - One Direction", "Can't See Me - 2Pac", "Hala Madrid", "Bohemian Rhapsody - Queen"], correct: 0 },
+        { q: "What place do you love the most?", options: ["Flower fields", "Mountains", "Water", "Water and flower fields"], correct: 3 }
+    ];
+
+    const compliments = ["You're so smart!", "Amazing!", "I love you!", "Perfect!", "You're doing great!", "You're my favorite!"];
+    
+    let currentQuestion = 0;
+    const sprite = document.getElementById('character-sprite');
+    const questionEl = document.getElementById('question-text');
+    const optionsEl = document.getElementById('options');
+    const messageEl = document.getElementById('message');
+
+    // Check if the user has already failed previously
+    if (localStorage.getItem('gameStatus') === 'failed') {
+        renderFailure();
+    } else {
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        if (currentQuestion >= questions.length) {
+            renderWin();
+            return;
+        }
+
+        const data = questions[currentQuestion];
+        questionEl.innerText = data.q;
+        optionsEl.innerHTML = '';
+        messageEl.innerText = '';
+        sprite.classList.add('bounce');
+
+        data.options.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(index);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(index) {
+        if (index === questions[currentQuestion].correct) {
+            currentQuestion++;
+            messageEl.innerText = compliments[Math.floor(Math.random() * compliments.length)];
+            setTimeout(loadQuestion, 1500);
+        } else {
+            failGame();
+        }
+    }
+
+    function failGame() {
+        localStorage.setItem('gameStatus', 'failed');
+        renderFailure();
+    }
+
+    function renderFailure() {
+        questionEl.innerText = "GAME OVER";
+        optionsEl.innerHTML = '';
+        messageEl.innerText = "You failed. You can never play again.";
+        messageEl.classList.add('failed');
+        sprite.classList.remove('bounce');
+        // Replace this with your image of Hello Kitty bleeding
+        sprite.src = "https://placehold.co/150x150/000/red?text=BLOOD";
+        sprite.style.transform = "scale(1.2)";
+    }
+
+    function renderWin() {
+        questionEl.innerText = "YOU WON!";
+        optionsEl.innerHTML = '';
+        messageEl.innerText = "You know me so well! ❤️";
+        sprite.src = "https://placehold.co/150x150/ffb3d9/white?text=Happy+Kitty";
+    }
+</script>
+
+</body>
+</html>
