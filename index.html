@@ -3,109 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello Kitty Quiz</title>
+    <title>THE FINAL ULTIMATUM</title>
     <style>
         body {
-            background-color: #fff0f5;
-            background-image: radial-gradient(#ffb3d9 1px, transparent 1px);
-            background-size: 20px 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0d1117; /* Darkest Navy Blue */
+            font-family: 'Courier New', Courier, monospace; /* Classic Terminal Font */
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
+            color: #ff3333; /* Intense Red for general text */
         }
 
         #game-container {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(255, 105, 180, 0.3);
+            background: #161b22; /* Slightly Lighter Dark Navy */
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.5); /* Massive Red Glow */
             text-align: center;
-            max-width: 400px;
+            max-width: 450px;
             width: 85%;
-            border: 5px solid #ffb3d9;
+            border: 4px solid #ff0000; /* Bright Red Border */
+            transition: all 0.3s ease;
         }
 
-        #character-sprite {
-            width: 180px;
-            height: 180px;
-            object-fit: contain;
-            margin-bottom: 10px;
-        }
+        /* Failure state background change */
+        .game-over-bg { background-color: #330000 !important; }
 
-        .bounce { animation: cuteBounce 0.8s infinite alternate ease-in-out; }
-        @keyframes cuteBounce { 
-            from { transform: translateY(0); } 
-            to { transform: translateY(-15px); } 
-        }
+        h2 { color: #ffffff; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; }
 
-        .glitch { animation: shake 0.2s infinite; filter: grayscale(1) contrast(2) brightness(0.5); }
-        @keyframes shake {
-            0% { transform: translate(1px, 1px); }
-            50% { transform: translate(-1px, -2px); }
-            100% { transform: translate(1px, 1px); }
-        }
-
-        h2 { color: #ff4da6; font-size: 22px; }
-
-        .options-container { display: grid; gap: 12px; }
+        .options-container { display: grid; gap: 15px; margin-top: 25px;}
 
         button {
-            padding: 15px;
-            border: 2px solid #ffb3d9;
-            border-radius: 50px;
-            background-color: white;
-            color: #ff4da6;
+            padding: 18px;
+            border: 3px solid #666;
+            border-radius: 8px;
+            background-color: transparent;
+            color: white;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
+            text-transform: uppercase;
         }
 
-        button:hover { background-color: #ffb3d9; color: white; }
+        button:hover {
+            border-color: #ff0000; /* Red border on hover */
+            background-color: rgba(255, 0, 0, 0.1);
+            color: #ff3333;
+        }
 
-        /* Winner's Reward Style */
+        /* Target a specific answer button (Option A) in your image style */
+        .target-button {
+            border-color: #ff0000;
+            background-color: rgba(255, 0, 0, 0.2);
+            color: white;
+        }
+
         #reward-box {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f0fff0;
-            border: 2px dashed #4caf50;
+            margin-top: 30px;
+            padding: 20px;
+            background: #238636; /* Dark Green for reward */
+            border: 2px dashed white;
             border-radius: 10px;
+            color: white;
         }
 
         #reward-text {
             word-break: break-all;
             font-family: monospace;
             background: #eee;
-            padding: 5px;
+            color: black;
+            padding: 8px;
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
         }
 
-        .copy-btn { background-color: #4caf50; border-color: #4caf50; margin-top: 5px; }
+        .copy-btn { background-color: white; color: black; border-color: white; margin-top: 10px; font-weight: 1000; }
+        .copy-btn:hover { background-color: black; color: white; border-color: white; }
 
-        #message { margin-top: 20px; font-size: 18px; color: #ff1493; }
-        .failed-text { color: #ff0000 !important; font-weight: bold; }
+        #message { margin-top: 25px; font-size: 20px; color: #ff3333; font-weight: bold;}
+        .failed-text { color: #660000 !important; font-size: 28px; font-weight: bold;}
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <img id="character-sprite" class="bounce" src="https://media.tenor.com/7SjLz-Y2_6wAAAAi/hello-kitty-sanrio.gif" alt="Hello Kitty">
     
     <div id="quiz-box">
-        <h2 id="question-text">Loading...</h2>
+        <h2 id="question-text">SYSTEM SECURED</h2>
         <div id="options" class="options-container"></div>
         <p id="message"></p>
         
         <div id="reward-area" style="display: none;">
             <div id="reward-box">
-                <p><strong>Your Reward Code:</strong></p>
+                <p><strong>REWARD OBTAINED:</strong></p>
                 <code id="reward-text">1fISLOHkNNHMrsXQv4NzyCBPXHq5vMeoN</code>
-                <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+                <button class="copy-btn" onclick="copyCode()">COPY TO CLIPBOARD</button>
             </div>
         </div>
     </div>
@@ -113,17 +110,28 @@
 
 <script>
     const questions = [
-        { q: "When is my birthday?", options: ["11/22/2007", "11/22/2008"], correct: 0 },
-        { q: "What is my favorite color?", options: ["Red", "Black"], correct: 0 },
-        { q: "Do you love me?", options: ["Yes", "No"], correct: 0 },
-        { q: "What's the name that I like to be called?", options: ["Coby", "Baba"], correct: 0 },
-        { q: "What is your favorite band?", options: ["BTS", "One Direction", "Queen", "The Beatles"], correct: 1 },
-        { q: "What is your favorite song lyrics?", options: ["Perfect - One Direction", "Can't See Me - 2Pac", "Hala Madrid", "Bohemian Rhapsody - Queen"], correct: 0 },
-        { q: "What place do you love the most?", options: ["Flower fields", "Mountains", "Water", "Water and flower fields"], correct: 3 }
+        { q: "BIRTHDATE VERIFICATION REQUIRED", options: ["11/22/2007", "11/22/2008"], correct: 0 },
+        { q: "IDENTIFY THE PREFERRED HUE", options: ["RED", "BLACK"], correct: 0 },
+        { q: "AFFIRMATION STATUS", options: ["YES", "NO"], correct: 0 },
+        { q: "DESIGNATED ALIAS", options: ["COBY", "BABA"], correct: 0 },
+        { q: "REQUIRED MUSICAL COLLECTIVE", options: ["BTS", "ONE DIRECTION", "QUEEN", "THE BEATLES"], correct: 1 },
+        { q: "REQUIRED LYRICAL PHRASE", options: ["PERFECT - ONE DIRECTION", "CAN'T SEE ME - 2PAC", "HALA MADRID", "BOHEMIAN RHAPSODY - QUEEN"], correct: 0 },
+        { q: "REQUIRED GEOGRAPHIC TERRAIN", options: ["FLOWER FIELDS", "MOUNTAINS", "WATER", "WATER AND FLOWER FIELDS"], correct: 3 }
     ];
 
+    // THE MESSAGES YOU REQUESTED
+    const compliments = [
+        "how did you know that? 🤨",
+        "who are you lil bro? 🤨",
+        "nah i think I'm starting to know you 😋",
+        "nah you're just lucky kid",
+        "bro it's impossible are you taking a piss rn? Get a life leave me alone",
+        "you're so close to the end anonymous one",
+        "YOU GOT IT KIDDO I ALWAYS BELIEVED IN YOU TAKE THAT REWARD AND FIGURE IT OUT LOVE ❤️"
+    ];
+    
     let currentQuestion = 0;
-    const sprite = document.getElementById('character-sprite');
+    const container = document.getElementById('game-container');
     const questionEl = document.getElementById('question-text');
     const optionsEl = document.getElementById('options');
     const messageEl = document.getElementById('message');
@@ -155,8 +163,9 @@
     function checkAnswer(index) {
         if (index === questions[currentQuestion].correct) {
             currentQuestion++;
-            messageEl.innerText = "Yay! Correct! 💖";
-            setTimeout(loadQuestion, 1000);
+            // DISPLAY THE SPECIFIC MESSAGE YOU REQUESTED
+            messageEl.innerText = compliments[currentQuestion - 1]; 
+            setTimeout(loadQuestion, 1500);
         } else {
             failGame();
         }
@@ -168,31 +177,30 @@
     }
 
     function renderFailure() {
-        questionEl.innerText = "ACCESS DENIED";
+        questionEl.innerText = "SYSTEM FAILURE";
         optionsEl.innerHTML = '';
-        messageEl.innerText = "You failed. You can never play again.";
+        messageEl.innerText = "ACCESS DENIED FOREVER";
         messageEl.classList.add('failed-text');
-        sprite.classList.remove('bounce');
-        sprite.classList.add('glitch');
-        sprite.src = "https://media.tenor.com/2X9v_s5XnS0AAAAi/hello-kitty-bad-tz-maru.gif";
-        document.body.style.backgroundColor = "#220000";
+        
+        container.classList.add('game-over-bg');
+        container.style.boxShadow = "none";
+        document.body.style.backgroundColor = "black";
     }
 
     function renderWin() {
-        questionEl.innerText = "YOU WON! ❤️";
+        questionEl.innerText = "ACCESS GRANTED";
         optionsEl.innerHTML = '';
-        messageEl.innerText = "You know me perfectly! Here is your reward:";
-        sprite.src = "https://media.tenor.com/unS77_6O6_0AAAAi/hello-kitty-sanrio.gif";
+        // Final message from your list
+        messageEl.innerText = compliments[6]; 
         rewardArea.style.display = "block";
     }
 
     function copyCode() {
         const code = document.getElementById('reward-text').innerText;
         navigator.clipboard.writeText(code);
-        alert("Code copied to clipboard!");
+        alert("REWARD COPIED");
     }
 </script>
 
 </body>
 </html>
-
